@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: postgres
+    restart: unless-stopped
+
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-yamis}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-realtiger}
+      POSTGRES_DB: ${POSTGRES_DB:-yamis_db}
+      TZ: Asia/Kolkata
+      PGTZ: Asia/Kolkata
+
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    command: >
+      sh -c "mkdir -p /usr/share/zoneinfo/Asia &&
+             ln -sf /usr/share/zoneinfo/Asia/Kolkata /usr/share/zoneinfo/Asia/Calcutta &&
+             exec docker-entrypoint.sh postgres"
+
+volumes:
+  postgres_data:
+    name: yamis_postgres_data
