@@ -22,6 +22,7 @@
             </column>
             <column name="display_name" type="varchar(255)"/>
             <column name="email" type="varchar(255)"/>
+            <column name="password" type="varchar(255)"/>
             <column name="is_enabled" type="boolean" defaultValueComputed="true">
                 <constraints nullable="false"/>
             </column>

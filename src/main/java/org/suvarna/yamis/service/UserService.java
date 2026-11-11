@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.suvarna.yamis.dto.request.AssignGroupsRequest;
 import org.suvarna.yamis.dto.request.CreateUserRequest;
+import org.suvarna.yamis.dto.request.UpdatePasswordRequest;
 import org.suvarna.yamis.dto.request.UpdateUserRequest;
 import org.suvarna.yamis.dto.response.UserResponse;
 
@@ -20,6 +21,8 @@ public interface UserService {
 
     UserResponse updateUser(UUID uid, UpdateUserRequest request);
 
+    void updatePassword(UUID uid, UpdatePasswordRequest request);
+
     void deleteUser(UUID uid);
 
     UserResponse assignGroups(UUID uid, AssignGroupsRequest request);
@@ -28,4 +31,3 @@ public interface UserService {
 
     Set<String> getUserEffectivePrivileges(UUID uid);
 }
-

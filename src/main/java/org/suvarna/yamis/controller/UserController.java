@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.suvarna.yamis.dto.request.AssignGroupsRequest;
 import org.suvarna.yamis.dto.request.CreateUserRequest;
+import org.suvarna.yamis.dto.request.UpdatePasswordRequest;
 import org.suvarna.yamis.dto.request.UpdateUserRequest;
 import org.suvarna.yamis.dto.response.UserResponse;
 import org.suvarna.yamis.service.UserService;
@@ -23,7 +24,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/users")
-@Tag(name = "User Management", description = "APIs for managing users, memberships, and resolving effective privileges")
+@Tag(name = "User Management", description = "APIs for managing users, passwords, memberships, and resolving effective privileges")
 public class UserController {
 
     private final UserService userService;
@@ -78,6 +79,21 @@ public class UserController {
             @PathVariable UUID uid,
             @Valid @RequestBody UpdateUserRequest request) {
         return ResponseEntity.ok(userService.updateUser(uid, request));
+    }
+
+    @PutMapping("/{uid}/password")
+    @Operation(summary = "Update user password", description = "Updates the password for the specified user.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Password successfully updated"),
+            @ApiResponse(responseCode = "400", description = "Validation error in request body"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    public ResponseEntity<Void> updatePassword(
+            @Parameter(description = "Unique identifier of the user (UUID)", required = true)
+            @PathVariable UUID uid,
+            @Valid @RequestBody UpdatePasswordRequest request) {
+        userService.updatePassword(uid, request);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{uid}")

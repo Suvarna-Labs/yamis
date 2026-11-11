@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.suvarna.yamis.dto.request.AssignGroupsRequest;
 import org.suvarna.yamis.dto.request.CreateUserRequest;
+import org.suvarna.yamis.dto.request.UpdatePasswordRequest;
 import org.suvarna.yamis.dto.request.UpdateUserRequest;
 import org.suvarna.yamis.dto.response.UserResponse;
 import org.suvarna.yamis.entity.Group;
@@ -23,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -100,6 +100,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public void updatePassword(UUID uid, UpdatePasswordRequest request) {
+        User user = userRepository.findByUid(uid)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with UID: " + uid));
+
+        user.setPassword(request.newPassword());
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
     public void deleteUser(UUID uid) {
         User user = userRepository.findByUid(uid)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with UID: " + uid));
@@ -157,4 +167,3 @@ public class UserServiceImpl implements UserService {
         return privileges;
     }
 }
-

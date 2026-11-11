@@ -28,6 +28,9 @@ public class User {
     @Column(name = "email", length = 255)
     private String email;
 
+    @Column(name = "password", length = 255)
+    private String password;
+
     @Column(name = "is_enabled", nullable = false)
     private boolean isEnabled = true;
 
@@ -117,6 +120,14 @@ public class User {
         this.email = email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public boolean isEnabled() {
         return isEnabled;
     }
@@ -161,4 +172,3 @@ public class User {
         return Objects.hash(uid);
     }
 }
-
