@@ -1,0 +1,16 @@
+databaseChangeLog:
+
+  # Common migrations - execute on both databases
+  - includeAll:
+      path: common/
+      relativeToChangelogFile: true
+
+  # PostgreSQL migrations
+#  - includeAll:
+#      path: postgres/
+#      relativeToChangelogFile: true
+
+  # MySQL migrations
+#  - includeAll:
+#      path: mysql/
+#      relativeToChangelogFile: true

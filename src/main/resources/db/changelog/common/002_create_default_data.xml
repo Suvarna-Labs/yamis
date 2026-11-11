@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- ===================================== -->
+    <!-- GROUPS                                -->
+    <!-- ===================================== -->
+
+    <changeSet id="1001-insert-groups" author="pns120">
+        <insert tableName="yamis_base_groups">
+            <column name="group_id" value="2ff36072-8f44-411f-9c65-f93b918d5c4c"/>
+            <column name="group_name" value="YAMIS_SUPER_ADMIN"/>
+            <column name="is_super_admin" value="true"/>
+        </insert>
+    </changeSet>
+
+    <!-- ===================================== -->
+    <!-- PRIVILEGES                            -->
+    <!-- ===================================== -->
+
+    <changeSet id="1003-insert-privileges" author="pns120">
+
+        <!-- ===================================== -->
+        <!-- RELATED TO USERS                      -->
+        <!-- ===================================== -->
+        <insert tableName="yamis_base_privileges">
+            <column name="privilege_name" value="USER_CREATE"/>
+            <column name="description" value="Create new users"/>
+        </insert>
+
+        <insert tableName="yamis_base_privileges">
+            <column name="privilege_name" value="USER_READ"/>
+            <column name="description" value="View user list and information"/>
+        </insert>
+
+        <insert tableName="yamis_base_privileges">
+            <column name="privilege_name" value="USER_UPDATE"/>
+            <column name="description" value="Update user information"/>
+        </insert>
+
+        <insert tableName="yamis_base_privileges">
+            <column name="privilege_name" value="USER_DELETE"/>
+            <column name="description" value="Delete users"/>
+        </insert>
+
+        <!-- ===================================== -->
+        <!-- RELATED TO GROUPS                     -->
+        <!-- ===================================== -->
+        <insert tableName="yamis_base_privileges">
+            <column name="privilege_name" value="GROUP_CREATE"/>
+            <column name="description" value="Create groups"/>
+        </insert>
+
+        <insert tableName="yamis_base_privileges">
+            <column name="privilege_name" value="GROUP_READ"/>
+            <column name="description" value="View groups"/>
+        </insert>
+
+        <insert tableName="yamis_base_privileges">
+            <column name="privilege_name" value="GROUP_MODIFY"/>
+            <column name="description" value="Modify group details"/>
+        </insert>
+
+        <insert tableName="yamis_base_privileges">
+            <column name="privilege_name" value="GROUP_DELETE"/>
+            <column name="description" value="Delete groups"/>
+        </insert>
+
+        <insert tableName="yamis_base_privileges">
+            <column name="privilege_name" value="GROUP_ADD_USER"/>
+            <column name="description" value="Add new users to groups"/>
+        </insert>
+
+        <insert tableName="yamis_base_privileges">
+            <column name="privilege_name" value="GROUP_REMOVE_USER"/>
+            <column name="description" value="Remove existing users from groups"/>
+        </insert>
+
+
+        <!-- ===================================== -->
+        <!-- RELATED TO ROLES                      -->
+        <!-- ===================================== -->
+
+        <insert tableName="yamis_base_privileges">
+            <column name="privilege_name" value="ROLE_CREATE"/>
+            <column name="description" value="Create roles"/>
+        </insert>
+
+        <insert tableName="yamis_base_privileges">
+            <column name="privilege_name" value="ROLE_READ"/>
+            <column name="description" value="View roles"/>
+        </insert>
+
+        <insert tableName="yamis_base_privileges">
+            <column name="privilege_name" value="ROLE_MODIFY"/>
+            <column name="description" value="Modify role details"/>
+        </insert>
+
+        <insert tableName="yamis_base_privileges">
+            <column name="privilege_name" value="ROLE_DELETE"/>
+            <column name="description" value="Delete roles"/>
+        </insert>
+
+        <insert tableName="yamis_base_privileges">
+            <column name="privilege_name" value="ROLE_ASSIGN_GROUP"/>
+            <column name="description" value="Assign roles to groups"/>
+        </insert>
+
+        <insert tableName="yamis_base_privileges">
+            <column name="privilege_name" value="ROLE_UNASSIGN_GROUP"/>
+            <column name="description" value="Unassign roles to groups"/>
+        </insert>
+
+
+        <!-- ===================================== -->
+        <!-- CAN VIEW ANYTHING ROLE                -->
+        <!-- ===================================== -->
+
+        <insert tableName="yamis_base_privileges">
+            <column name="privilege_name" value="VIEW_ALL"/>
+            <column name="description" value=" roles to groups"/>
+        </insert>
+
+    </changeSet>
+
+    <changeSet id="1004-create-superadmin" author="pns120">
+        <insert tableName="yamis_base_users">
+            <column name="uid"
+                    value="4a3a76cc-e0dd-4af2-b339-3803409f114d"/>
+            <column name="username" value="yamisadmin"/>
+            <column name="display_name" value="Yamis Superuser"/>
+            <column name="email" value="superuser@yamis.local"/>
+        </insert>
+        <sql>
+            INSERT INTO yamis_base_user_groups (user_pk, group_pk)
+            SELECT u.pk, g.pk
+            FROM yamis_base_users u
+                     CROSS JOIN yamis_base_groups g
+            WHERE u.username = 'yamisadmin'
+              AND g.group_name = 'YAMIS_SUPER_ADMIN';
+        </sql>
+    </changeSet>
+</databaseChangeLog>

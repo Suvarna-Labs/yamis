@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- USERS -->
+    <changeSet id="0010-create-users" author="pns120">
+        <createTable tableName="yamis_base_users">
+            <column name="pk" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_yamis_users"/>
+            </column>
+            <column name="uid" type="uuid">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uk_yamis_users_uid"/>
+            </column>
+            <column name="username" type="varchar(150)">
+                <constraints nullable="false"
+                             unique="true"
+                             uniqueConstraintName="uk_yamis_users_username"/>
+            </column>
+            <column name="display_name" type="varchar(255)"/>
+            <column name="email" type="varchar(255)"/>
+            <column name="is_enabled" type="boolean" defaultValueComputed="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="boolean" defaultValueComputed="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp"
+                    defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <!-- GROUPS -->
+    <changeSet id="0020-create-groups" author="pns120">
+        <createTable tableName="yamis_base_groups">
+            <column name="pk" type="bigint"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_yamis_groups"/>
+            </column>
+            <column name="group_id" type="uuid">
+                <constraints nullable="false"
+                             unique="true"
+                             uniqueConstraintName="uk_yamis_groups_id"/>
+            </column>
+            <column name="group_name" type="varchar(150)">
+                <constraints nullable="false"
+                             unique="true"
+                             uniqueConstraintName="uk_yamis_groups_name"/>
+            </column>
+            <column name="is_super_admin" type="boolean" defaultOnNull="false"/>
+        </createTable>
+    </changeSet>
+
+    <!-- GROUP ROLE MAPPING -->
+    <changeSet id="0030-create-user-groups" author="pns120">
+        <createTable tableName="yamis_base_user_groups">
+            <column name="user_pk" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_pk" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Composite Primary Key -->
+        <addPrimaryKey
+                tableName="yamis_base_user_groups"
+                columnNames="user_pk, group_pk"
+                constraintName="pk_yamis_user_groups"/>
+        
+        <!-- User Foreign Key -->
+        <addForeignKeyConstraint
+                baseTableName="yamis_base_user_groups"
+                baseColumnNames="user_pk"
+                referencedTableName="yamis_base_users"
+                referencedColumnNames="pk"
+                constraintName="fk_yamis_ug_user"
+                onDelete="CASCADE"/>
+
+        <!-- Group Foreign Key -->
+        <addForeignKeyConstraint
+                baseTableName="yamis_base_user_groups"
+                baseColumnNames="group_pk"
+                referencedTableName="yamis_base_groups"
+                referencedColumnNames="pk"
+                constraintName="fk_yamis_ug_group"
+                onDelete="CASCADE"/>
+
+        <!-- Reverse lookup index -->
+        <createIndex
+                tableName="yamis_base_user_groups"
+                indexName="idx_yamis_ug_group">
+            <column name="group_pk"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- ROLES -->
+    <changeSet id="0040-create-roles" author="pns120">
+        <createTable tableName="yamis_base_roles">
+            <column name="pk" type="bigint"
+                    autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_yamis_roles"/>
+            </column>
+            <column name="role_name" type="varchar(150)">
+                <constraints nullable="false"
+                             unique="true"
+                             uniqueConstraintName="uk_yamis_roles_name"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- GROUP ROLE MAPPING -->
+    <changeSet id="0050-create-group-roles" author="pns120">
+        <createTable tableName="yamis_base_group_roles">
+            <column name="group_pk" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_pk" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Composite Primary Key -->
+        <addPrimaryKey
+                tableName="yamis_base_group_roles"
+                columnNames="group_pk, role_pk"
+                constraintName="pk_yamis_group_roles"/>
+
+        <!-- Group Foreign Key -->
+        <addForeignKeyConstraint
+                baseTableName="yamis_base_group_roles"
+                baseColumnNames="group_pk"
+                referencedTableName="yamis_base_groups"
+                referencedColumnNames="pk"
+                constraintName="fk_yamis_gr_group"
+                onDelete="CASCADE"/>
+
+        <!-- Role Foreign Key -->
+        <addForeignKeyConstraint
+                baseTableName="yamis_base_group_roles"
+                baseColumnNames="role_pk"
+                referencedTableName="yamis_base_roles"
+                referencedColumnNames="pk"
+                constraintName="fk_yamis_gr_role"
+                onDelete="CASCADE"/>
+
+        <!-- Reverse lookup index -->
+        <createIndex
+                tableName="yamis_base_group_roles"
+                indexName="idx_yamis_gr_role">
+            <column name="role_pk"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- PRIVILEGES -->
+    <changeSet id="0060-create-privileges" author="admin">
+        <createTable tableName="yamis_base_privileges">
+            <column name="pk" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_yamis_privileges"/>
+            </column>
+            <column name="privilege_name" type="varchar(150)">
+                <constraints nullable="false"
+                             unique="true"
+                             uniqueConstraintName="uk_yamis_privileges_name"/>
+            </column>
+            <column name="description" type="varchar(500)"/>
+        </createTable>
+    </changeSet>
+
+    <!-- ROLE PRIVILEGE MAPPING -->
+    <changeSet id="0070-create-role-privileges" author="admin">
+        <createTable tableName="yamis_base_role_privileges">
+            <column name="role_pk" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="privilege_pk" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey
+                tableName="yamis_base_role_privileges"
+                columnNames="role_pk, privilege_pk"
+                constraintName="pk_yamis_role_privileges"/>
+        <addForeignKeyConstraint
+                baseTableName="yamis_base_role_privileges"
+                baseColumnNames="role_pk"
+                referencedTableName="yamis_base_roles"
+                referencedColumnNames="pk"
+                constraintName="fk_yamis_rp_role"
+                onDelete="CASCADE"/>
+        <addForeignKeyConstraint
+                baseTableName="yamis_base_role_privileges"
+                baseColumnNames="privilege_pk"
+                referencedTableName="yamis_base_privileges"
+                referencedColumnNames="pk"
+                constraintName="fk_yamis_rp_privilege"
+                onDelete="CASCADE"/>
+        <createIndex
+                tableName="yamis_base_role_privileges"
+                indexName="idx_yamis_rp_privilege">
+            <column name="privilege_pk"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
