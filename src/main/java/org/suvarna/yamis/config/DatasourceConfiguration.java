@@ -1,4 +1,4 @@
-package org.suvarna.yamis.core.config;
+package org.suvarna.yamis.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -53,3 +53,4 @@ public class DatasourceConfiguration {
         };
     }
 }
+
