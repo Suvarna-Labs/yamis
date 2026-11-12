@@ -6,9 +6,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,12 +30,14 @@ public class RoleController {
     }
 
     @GetMapping
-    @Operation(summary = "List all roles", description = "Returns a paginated list of all defined roles.")
+    @Operation(summary = "List all roles", description = "Returns a paginated list of all defined roles in stable PagedModel format.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved roles page")
     })
-    public ResponseEntity<Page<RoleResponse>> getAllRoles(@PageableDefault(size = 20) Pageable pageable) {
-        return ResponseEntity.ok(roleService.getAllRoles(pageable));
+    public ResponseEntity<PagedModel<RoleResponse>> getAllRoles(
+            @ParameterObject
+            @PageableDefault(page = 1, size = 10) Pageable pageable) {
+        return ResponseEntity.ok(new PagedModel<>(roleService.getAllRoles(pageable)));
     }
 
     @PostMapping

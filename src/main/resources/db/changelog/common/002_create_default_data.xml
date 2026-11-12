@@ -139,6 +139,7 @@
             <column name="username" value="yamisadmin"/>
             <column name="display_name" value="Yamis Superuser"/>
             <column name="email" value="superuser@yamis.local"/>
+            <column name="password" value="$2a$12$XJ5AD9roqlMeq.ehxIJDAeKq3gNS/7nO6N5EiTIY8t6lrwBu7V8RK"/>
         </insert>
         <sql>
             INSERT INTO yamis_base_user_groups (user_pk, group_pk)

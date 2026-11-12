@@ -6,9 +6,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,12 +35,14 @@ public class UserController {
     }
 
     @GetMapping
-    @Operation(summary = "List all users", description = "Returns a paginated list of registered users.")
+    @Operation(summary = "List all users", description = "Returns a paginated list of registered users in stable PagedModel format.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved users page")
     })
-    public ResponseEntity<Page<UserResponse>> getAllUsers(@PageableDefault(size = 20) Pageable pageable) {
-        return ResponseEntity.ok(userService.getAllUsers(pageable));
+    public ResponseEntity<PagedModel<UserResponse>> getAllUsers(
+            @ParameterObject
+            @PageableDefault(page = 1, size = 10) Pageable pageable) {
+        return ResponseEntity.ok(new PagedModel<>(userService.getAllUsers(pageable)));
     }
 
     @PostMapping

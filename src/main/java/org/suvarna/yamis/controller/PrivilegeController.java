@@ -5,9 +5,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,12 +29,14 @@ public class PrivilegeController {
     }
 
     @GetMapping
-    @Operation(summary = "List all privileges", description = "Returns a paginated list of all granular privileges.")
+    @Operation(summary = "List all privileges", description = "Returns a paginated list of all granular privileges in stable PagedModel format.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved privileges page")
     })
-    public ResponseEntity<Page<PrivilegeResponse>> getAllPrivileges(@PageableDefault(size = 20) Pageable pageable) {
-        return ResponseEntity.ok(privilegeService.getAllPrivileges(pageable));
+    public ResponseEntity<PagedModel<PrivilegeResponse>> getAllPrivileges(
+            @ParameterObject
+            @PageableDefault(page = 1, size = 10) Pageable pageable) {
+        return ResponseEntity.ok(new PagedModel<>(privilegeService.getAllPrivileges(pageable)));
     }
 
     @GetMapping("/{privilegeName}")

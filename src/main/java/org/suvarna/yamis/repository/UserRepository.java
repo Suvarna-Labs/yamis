@@ -33,6 +33,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE u.uid = :uid")
     Optional<User> findWithFullAuthoritiesByUid(@Param("uid") UUID uid);
 
+    @Query("SELECT DISTINCT u FROM User u " +
+            "LEFT JOIN FETCH u.groups g " +
+            "LEFT JOIN FETCH g.roles r " +
+            "LEFT JOIN FETCH r.privileges " +
+            "WHERE u.username = :username")
+    Optional<User> findWithFullAuthoritiesByUsername(@Param("username") String username);
+
     Page<User> findAll(Pageable pageable);
 }
 

@@ -32,10 +32,10 @@ public class User {
     private String password;
 
     @Column(name = "is_enabled", nullable = false)
-    private boolean isEnabled = true;
+    private boolean enabled = true;
 
     @Column(name = "is_active", nullable = false)
-    private boolean isActive = true;
+    private boolean active = true;
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -59,8 +59,6 @@ public class User {
         this.username = username;
         this.displayName = displayName;
         this.email = email;
-        this.isEnabled = true;
-        this.isActive = true;
     }
 
     @PrePersist
@@ -129,19 +127,19 @@ public class User {
     }
 
     public boolean isEnabled() {
-        return isEnabled;
+        return this.enabled;
     }
 
     public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
+        this.enabled = enabled;
     }
 
     public boolean isActive() {
-        return isActive;
+        return this.active;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public LocalDateTime getCreatedAt() {
